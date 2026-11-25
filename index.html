@@ -90,7 +90,7 @@ button{border-radius:999px;transition:.15s}
 button:hover{transform:translateY(-1px)}
 button.on,button.pri{background:linear-gradient(135deg,var(--ac),var(--ac2,#a58be8));border-color:transparent;color:#fff}
 .m{border-radius:22px;box-shadow:0 6px 20px color-mix(in srgb,var(--ac) 13%,transparent);padding:14px}
-.m h3{color:var(--ac);font-size:16px}.m h3::before{content:"✿ ";color:var(--g)}
+.m h3{color:var(--ac);font-size:16px}.m h3::before{content:"★ ";color:var(--g)}
 .d{border-radius:50%;aspect-ratio:1;min-height:0;padding:0}
 .d.t{background:var(--ac);color:#fff;border-color:transparent}.d.t b{font-weight:700}
 .d.t.late{background:var(--r)}
@@ -112,7 +112,7 @@ input[type=color]{width:48px;height:36px;border:0;background:none;padding:0;curs
 <body>
 <div class="wrap">
 <header>
- <h1 id="ttl">✿ Meu Calendário Financeiro</h1>
+ <h1 id="ttl">★ Meu Calendário Financeiro</h1>
  <div class="nav">
   <button id="py">‹</button><span id="yr"></span><button id="ny">›</button>
   <button data-t="cal" class="on">Calendário</button><button data-t="dash">Painel</button><button data-t="cfg">Personalizar</button><button data-t="bk">Backup</button>
@@ -304,7 +304,7 @@ function applyCfg(){
  const st=document.documentElement.style;
  Object.entries(v).forEach(([k,x])=>st.setProperty(k,x));
  st.colorScheme=dk?"dark":"light";
- $("#ttl").textContent="✿ "+CFG.title;document.title=CFG.title;
+ $("#ttl").textContent="★ "+CFG.title;document.title=CFG.title;
  const mt=document.querySelector("meta[name=theme-color]");if(mt)mt.setAttribute("content",ac);
 }
 function drawCfg(){
