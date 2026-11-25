@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calendário Financeiro Anual</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8b6fd6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Contas">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f7f3fb;--card:#ffffff;--tx:#3b3350;--mu:#8a82a0;--bd:#ebe4f5;--ac:#8b6fd6;--g:#3fb68b;--r:#e8806a;--gl:#cdeee1;--rl:#fbd9cc;--hd:#e9defa;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1e1a2b;--card:#292338;--tx:#efeaf8;--mu:#a59cbd;--bd:#3a3250;--ac:#b79cff;--g:#5fd3a6;--r:#ff9c80;--gl:#265a47;--rl:#6a3a2e;--hd:#2c2442;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1e1a2b;--card:#292338;--tx:#efeaf8;--mu:#a59cbd;--bd:#3a3250;--ac:#b79cff;--g:#5fd3a6;--r:#ff9c80;--gl:#265a47;--rl:#6a3a2e;--hd:#2c2442;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+header{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+h1{font-size:20px;margin:0}
+.nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+button,select,input{font:inherit;color:var(--tx)}
+button{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px 12px;cursor:pointer}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+button.pri{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+#yr{font-weight:700;min-width:48px;text-align:center}
+.leg{color:var(--mu);font-size:13px;margin:0 0 10px}
+.leg u,.d u{display:inline-block;width:7px;height:7px;border-radius:50%;text-decoration:none}
+u.g{background:var(--g)}u.r{background:var(--r)}
+.months{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.m{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px}
+.m h3{margin:0 0 6px;font-size:15px}
+.wd,.gr{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.wd{color:var(--mu);font-size:11px;margin-bottom:2px}
+.d{background:none;border:1px solid transparent;border-radius:6px;padding:2px 0;min-height:36px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.d b{font-weight:500;font-size:13px}.d span{display:flex;gap:2px;height:7px}
+.d:hover{background:var(--bg)}
+.d.t{border-color:var(--ac)}
+.d.late{background:var(--rl)}
+.ms{font-size:12px;color:var(--mu);margin-top:6px;display:flex;justify-content:space-between;gap:4px;flex-wrap:wrap}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.c small{color:var(--mu);display:block}.c strong{font-size:19px}
+.pos{color:var(--g)}.neg{color:var(--r)}
+.box2{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:12px;overflow-x:auto}
+.box2 h3{margin:0 0 8px;font-size:15px}
+.chart{display:flex;gap:6px;align-items:flex-end;height:150px;min-width:520px}
+.col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
+.pair{display:flex;gap:2px;align-items:flex-end;height:calc(100% - 18px);width:100%;justify-content:center}
+.bar{display:flex;flex-direction:column;width:42%;max-width:16px;min-height:0}
+.bar i{display:block}
+.bar.in i{background:var(--g)}.bar.in i.p{background:var(--gl)}
+.bar.out i{background:var(--r)}.bar.out i.p{background:var(--rl)}
+.col em{font-style:normal;font-size:11px;color:var(--mu);height:18px}
+table{width:100%;border-collapse:collapse;min-width:480px}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--bd);font-size:14px}
+th:first-child,td:first-child{text-align:left}
+.cat{display:grid;grid-template-columns:110px 1fr 100px;gap:8px;align-items:center;margin:5px 0;font-size:14px}
+.cat div{background:var(--bd);border-radius:6px;height:12px}.cat div i{display:block;height:100%;background:var(--r);border-radius:6px}
+.cat span:last-child{text-align:right}
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px;z-index:5}
+#ov[hidden]{display:none}
+.box{background:var(--card);border-radius:14px;width:100%;max-width:460px;padding:14px;border:1px solid var(--bd)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top h2{margin:0;font-size:17px}
+.it{display:grid;grid-template-columns:auto 1fr 96px auto;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:14px}
+.it.in .n{color:var(--g)}.it.out .n{color:var(--r)}
+.it small{grid-column:2/5;color:var(--mu)}
+.it input[type=number]{width:96px}
+.frm{display:grid;gap:8px;margin-top:12px}
+.frm input[type=text],.frm input[type=number],.frm input[type=date],.frm select,textarea{width:100%;background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px}
+.it input[type=number]{background:var(--bg);border:1px solid var(--bd);border-radius:6px;padding:4px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg{display:flex;gap:14px}
+#chips{display:flex;flex-wrap:wrap;gap:5px}
+#chips label{border:1px solid var(--bd);border-radius:14px;padding:3px 9px;font-size:13px;cursor:pointer}
+#chips label:has(input:checked){background:var(--ac);color:#fff;border-color:var(--ac)}
+#chips input{display:none}
+#err{color:var(--r);margin:0;font-size:13px}
+.lk{background:none;border:0;padding:0;color:var(--ac);font-size:12px}
+.x{background:none;border:0;padding:2px 6px;color:var(--mu)}
+textarea{min-height:140px;font:12px monospace}
+.hide{display:none}
+
+body{background:linear-gradient(180deg,var(--hd) 0,var(--bg) 280px) no-repeat,var(--bg);font-family:ui-rounded,"SF Pro Rounded","Nunito","Quicksand",system-ui,-apple-system,"Segoe UI",sans-serif}
+h1{font-size:22px;color:var(--ac)}
+button{border-radius:999px;transition:.15s}
+button:hover{transform:translateY(-1px)}
+button.on,button.pri{background:linear-gradient(135deg,var(--ac),var(--ac2,#a58be8));border-color:transparent;color:#fff}
+.m{border-radius:22px;box-shadow:0 6px 20px color-mix(in srgb,var(--ac) 13%,transparent);padding:14px}
+.m h3{color:var(--ac);font-size:16px}.m h3::before{content:"✿ ";color:var(--g)}
+.d{border-radius:50%;aspect-ratio:1;min-height:0;padding:0}
+.d.t{background:var(--ac);color:#fff;border-color:transparent}.d.t b{font-weight:700}
+.d.t.late{background:var(--r)}
+.ms{border-top:1px dashed var(--bd);padding-top:7px}
+.c,.box2,.box{border-radius:20px;box-shadow:0 6px 20px color-mix(in srgb,var(--ac) 1%,transparent)}
+.c strong{font-size:20px}
+.bar{border-radius:6px 6px 0 0;overflow:hidden}
+.cat div,.cat div i{border-radius:999px}
+.frm input[type=text],.frm input[type=number],.frm input[type=date],.frm select,textarea{border-radius:12px}
+#chips label{border-radius:999px}
+
+#v-cfg input[type=text],#v-cfg select{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:8px}
+input[type=color]{width:48px;height:36px;border:0;background:none;padding:0;cursor:pointer}
+.cl{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--mu)}
+.nav u{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:2px;text-decoration:none}
+#cf-o,#cf-i{min-height:210px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h1 id="ttl">✿ Meu Calendário Financeiro</h1>
+ <div class="nav">
+  <button id="py">‹</button><span id="yr"></span><button id="ny">›</button>
+  <button data-t="cal" class="on">Calendário</button><button data-t="dash">Painel</button><button data-t="cfg">Personalizar</button><button data-t="bk">Backup</button>
+  <button class="pri" id="new">+ Lançamento</button>
+ </div>
+</header>
+
+<div id="v-cal">
+ <p class="leg"><u class="g"></u> entrada &nbsp; <u class="r"></u> saída &nbsp; fundo rosa = conta em atraso &nbsp; borda azul = hoje. Clique em um dia para lançar ou ver.</p>
+ <div class="months" id="months"></div>
+</div>
+
+<div id="v-dash" class="hide">
+ <div class="nav"><select id="pm"></select></div>
+ <div class="cards" id="cards"></div>
+ <div class="box2"><h3>Entradas e saídas por mês <small style="color:var(--mu);font-weight:400">(cor forte = realizado, clara = pendente)</small></h3><div class="chart" id="chart"></div></div>
+ <div class="box2"><h3>Resumo mensal</h3><table id="tb"></table></div>
+ <div class="box2"><h3>Saídas por categoria</h3><div id="cats"></div></div>
+</div>
+
+<div id="v-cfg" class="hide">
+ <div class="box2"><h3>Nome do calendário</h3><input id="cf-t" type="text" maxlength="40" style="width:100%"></div>
+ <div class="box2"><h3>Cores</h3>
+  <div class="nav" id="cf-p"></div>
+  <div class="cl"><label>Principal<br><input id="cf-a" type="color"></label><label>Entradas<br><input id="cf-g" type="color"></label><label>Saídas<br><input id="cf-r" type="color"></label>
+  <label>Modo<br><select id="cf-m"><option value="auto">Automático</option><option value="light">Claro</option><option value="dark">Escuro</option></select></label></div>
+ </div>
+ <div class="box2"><h3>Categorias</h3><p class="leg">Uma por linha. Lançamentos antigos mantêm a categoria que já tinham.</p>
+  <div class="row"><div><b>Saídas</b><textarea id="cf-o"></textarea></div><div><b>Entradas</b><textarea id="cf-i"></textarea></div></div></div>
+ <button id="cf-rs">Restaurar padrão</button>
+</div>
+
+<div id="v-bk" class="hide">
+ <div class="box2">
+  <h3>Backup dos dados</h3>
+  <p class="leg">Seus lançamentos ficam salvos neste navegador e neste aparelho. Copie o texto abaixo e guarde (e-mail, bloco de notas) para não perder; para restaurar, cole aqui e clique em Restaurar.</p>
+  <textarea id="bkt"></textarea>
+  <div class="nav" style="margin-top:8px"><button id="cp">Copiar backup</button><button id="rs">Restaurar do texto</button></div>
+  <p id="bkm" class="leg"></p>
+ </div>
+</div>
+</div>
+
+<div id="ov" hidden><div class="box">
+ <div class="top"><h2 id="mt"></h2><button class="x" id="cl">✕</button></div>
+ <div id="lst"></div>
+ <div class="frm">
+  <div class="seg"><label><input type="radio" name="tp" value="out" checked> Saída (despesa)</label><label><input type="radio" name="tp" value="in"> Entrada</label></div>
+  <input id="de" type="text" placeholder="Descrição (ex.: Aluguel, Salário)">
+  <div class="row"><input id="vl" type="number" step="0.01" min="0" placeholder="Valor (R$)"><input id="dt" type="date"></div>
+  <select id="ct"></select>
+  <select id="rp"><option value="0">Só nesta data</option><option value="1">Todo mês, até dezembro (despesa fixa)</option><option value="2">Escolher os meses</option></select>
+  <div id="chips" class="hide"></div>
+  <label><input type="checkbox" id="dn"> Já foi pago / recebido</label>
+  <p id="err"></p>
+  <button class="pri" id="add">Adicionar</button>
+ </div>
+</div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const MES=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const CATD={out:["Moradia","Contas (luz, água, internet)","Alimentação","Transporte","Saúde","Educação","Lazer","Cartão / Dívidas","Outros"],in:["Salário","Extra / Freelance","Outros"]};
+let CAT=CATD;
+const pad=n=>String(n).padStart(2,"0");
+const iso=(y,m,d)=>y+"-"+pad(m+1)+"-"+pad(d);
+const now=new Date();
+const TODAY=iso(now.getFullYear(),now.getMonth(),now.getDate());
+const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+let S={items:[],year:now.getFullYear(),tab:"cal",sel:null,pm:"all",confirm:null};
+try{const r=localStorage.getItem("calfin1");if(r)S.items=JSON.parse(r)||[]}catch(e){}
+const save=()=>{try{localStorage.setItem("calfin1",JSON.stringify(S.items))}catch(e){}};
+const sum=(l,t,done)=>l.filter(i=>i.type===t&&(done===undefined||i.done===done)).reduce((a,i)=>a+i.val,0);
+const inYear=()=>S.items.filter(i=>i.date.startsWith(S.year+"-"));
+
+function render(){
+ $("#yr").textContent=S.year;
+ ["cal","dash","bk","cfg"].forEach(t=>$("#v-"+t).classList.toggle("hide",S.tab!==t));
+ document.querySelectorAll("[data-t]").forEach(b=>b.classList.toggle("on",b.dataset.t===S.tab));
+ if(S.tab==="cal")drawCal();
+ if(S.tab==="dash")drawDash();
+ if(S.tab==="bk")$("#bkt").value=JSON.stringify(S.items);
+ if(S.tab==="cfg")drawCfg();
+}
+
+function drawCal(){
+ const all=inYear();let h="";
+ for(let m=0;m<12;m++){
+  const pre=S.year+"-"+pad(m+1);
+  const its=all.filter(i=>i.date.startsWith(pre));
+  const first=new Date(S.year,m,1).getDay(),n=new Date(S.year,m+1,0).getDate();
+  let c="";
+  for(let i=0;i<first;i++)c+="<i></i>";
+  for(let d=1;d<=n;d++){
+   const ds=iso(S.year,m,d),di=its.filter(i=>i.date===ds);
+   const hi=di.some(i=>i.type==="in"),ho=di.some(i=>i.type==="out");
+   const late=di.some(i=>i.type==="out"&&!i.done&&ds<TODAY);
+   c+=`<button class="d${ds===TODAY?" t":""}${late?" late":""}" data-d="${ds}"><b>${d}</b><span>${hi?'<u class="g"></u>':""}${ho?'<u class="r"></u>':""}</span></button>`;
+  }
+  const sal=sum(its,"in",true)-sum(its,"out",true),ap=sum(its,"out",false);
+  h+=`<section class="m"><h3>${MES[m]}</h3><div class="wd"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div><div class="gr">${c}</div><div class="ms"><span>Saldo: <b class="${sal<0?"neg":"pos"}">${brl(sal)}</b></span><span>A pagar: ${brl(ap)}</span></div></section>`;
+ }
+ $("#months").innerHTML=h;
+}
+
+function drawDash(){
+ const sel=$("#pm");
+ if(!sel.options.length){sel.innerHTML='<option value="all">Ano inteiro</option>'+MES.map((n,i)=>`<option value="${i}">${n}</option>`).join("");sel.onchange=()=>{S.pm=sel.value;drawDash()}}
+ sel.value=S.pm;
+ const all=inYear();
+ const its=S.pm==="all"?all:all.filter(i=>i.date.startsWith(S.year+"-"+pad(+S.pm+1)));
+ const ent=sum(its,"in",true),sai=sum(its,"out",true),ar=sum(its,"in",false),ap=sum(its,"out",false);
+ const atr=its.filter(i=>i.type==="out"&&!i.done&&i.date<TODAY).reduce((a,i)=>a+i.val,0);
+ const card=(t,v,cl)=>`<div class="c"><small>${t}</small><strong class="${cl||""}">${brl(v)}</strong></div>`;
+ $("#cards").innerHTML=card("Entradas recebidas",ent,"pos")+card("Saídas pagas",sai,"neg")+card("Saldo realizado",ent-sai,ent-sai<0?"neg":"pos")+card("A receber",ar)+card("A pagar",ap)+card("Em atraso",atr,atr>0?"neg":"");
+ const rows=MES.map((n,m)=>{const l=all.filter(i=>i.date.startsWith(S.year+"-"+pad(m+1)));return{n,ei:sum(l,"in",true),pi:sum(l,"in",false),so:sum(l,"out",true),po:sum(l,"out",false)}});
+ const mx=Math.max(1,...rows.map(r=>Math.max(r.ei+r.pi,r.so+r.po)));
+ const bar=(d,p,cl)=>`<div class="bar ${cl}" style="height:${(d+p)/mx*100}%"><i class="p" style="flex:${p}"></i><i style="flex:${d}"></i></div>`;
+ $("#chart").innerHTML=rows.map(r=>`<div class="col"><div class="pair" title="${r.n}: entradas ${brl(r.ei+r.pi)} / saídas ${brl(r.so+r.po)}">${bar(r.ei,r.pi,"in")}${bar(r.so,r.po,"out")}</div><em>${r.n.slice(0,3)}</em></div>`).join("");
+ $("#tb").innerHTML="<tr><th>Mês</th><th>Entradas</th><th>Saídas pagas</th><th>Saldo</th><th>A pagar</th></tr>"+rows.map(r=>{const s=r.ei-r.so;return`<tr><td>${r.n}</td><td>${brl(r.ei)}</td><td>${brl(r.so)}</td><td class="${s<0?"neg":"pos"}">${brl(s)}</td><td>${brl(r.po)}</td></tr>`}).join("");
+ const cs={};its.filter(i=>i.type==="out").forEach(i=>cs[i.cat]=(cs[i.cat]||0)+i.val);
+ const ks=Object.entries(cs).sort((a,b)=>b[1]-a[1]),cm=ks.length?ks[0][1]:1;
+ $("#cats").innerHTML=ks.length?ks.map(([k,v])=>`<div class="cat"><span>${k}</span><div><i style="width:${v/cm*100}%"></i></div><span>${brl(v)}</span></div>`).join(""):'<p class="leg">Sem saídas no período.</p>';
+}
+
+function fillCats(){const t=document.querySelector('input[name=tp]:checked').value;$("#ct").innerHTML=CAT[t].map(c=>`<option>${c}</option>`).join("")}
+function drawChips(){$("#chips").innerHTML=MES.map((n,i)=>`<label><input type="checkbox" value="${i}">${n.slice(0,3)}</label>`).join("")}
+function openModal(ds){
+ S.sel=ds;S.confirm=null;
+ $("#mt").textContent=ds?ds.split("-").reverse().join("/"):"Novo lançamento";
+ $("#dt").value=ds||TODAY;$("#de").value="";$("#vl").value="";$("#dn").checked=false;$("#rp").value="0";$("#err").textContent="";
+ $("#chips").classList.add("hide");drawChips();fillCats();drawList();$("#ov").hidden=false;
+}
+function drawList(){
+ const l=S.sel?S.items.filter(i=>i.date===S.sel):[];
+ $("#lst").innerHTML=l.length?l.map(i=>{const n=S.items.filter(x=>x.gid===i.gid).length;
+  return`<div class="it ${i.type}"><input type="checkbox" data-done="${i.id}" ${i.done?"checked":""} title="${i.type==="out"?"Pago":"Recebido"}"><span class="n">${i.desc}</span><input type="number" step="0.01" data-val="${i.id}" value="${i.val}"><button class="x" data-del="${i.id}" title="Excluir">✕</button><small>${i.cat}${n>1?` · <button class="lk" data-ser="${i.gid}">${S.confirm===i.gid?"Confirmar: excluir os "+n+" lançamentos da série":"Excluir série ("+n+")"}</button>`:""}</small></div>`}).join(""):'<p class="leg">Nenhum lançamento neste dia.</p>';
+}
+function add(){
+ const de=$("#de").value.trim(),v=parseFloat($("#vl").value),dt=$("#dt").value;
+ const type=document.querySelector("input[name=tp]:checked").value,rp=$("#rp").value;
+ if(!de||!(v>0)||!dt){$("#err").textContent="Preencha descrição, valor e data.";return}
+ const[Y,M,D]=dt.split("-").map(Number);
+ let ms=[M-1];
+ if(rp==="1"){ms=[];for(let m=M-1;m<12;m++)ms.push(m)}
+ if(rp==="2"){ms=[...document.querySelectorAll("#chips input:checked")].map(x=>+x.value);if(!ms.length){$("#err").textContent="Escolha ao menos um mês.";return}}
+ const gid=Date.now().toString(36),dn=$("#dn").checked;
+ ms.forEach(m=>{const day=Math.min(D,new Date(Y,m+1,0).getDate()),date=iso(Y,m,day);
+  S.items.push({id:gid+"_"+m,gid,date,desc:de,val:v,type,cat:$("#ct").value,done:dn&&(ms.length===1||date<=TODAY)})});
+ save();S.year=Y;$("#err").textContent="";$("#de").value="";$("#vl").value="";$("#dn").checked=false;$("#rp").value="0";$("#chips").classList.add("hide");drawChips();
+ drawList();render();
+}
+
+document.addEventListener("click",e=>{
+ const t=e.target;
+ if(t.id==="py"){S.year--;render()}
+ else if(t.id==="ny"){S.year++;render()}
+ else if(t.dataset.t){S.tab=t.dataset.t;render()}
+ else if(t.id==="new")openModal(null);
+ else if(t.id==="cl"||t.id==="ov")$("#ov").hidden=true;
+ else if(t.id==="add")add();
+ else if(t.closest(".d"))openModal(t.closest(".d").dataset.d);
+ else if(t.dataset.del){S.items=S.items.filter(i=>i.id!==t.dataset.del);save();drawList();render()}
+ else if(t.dataset.ser){const g=t.dataset.ser;if(S.confirm===g){S.items=S.items.filter(i=>i.gid!==g);S.confirm=null;save();drawList();render()}else{S.confirm=g;drawList()}}
+ else if(t.id==="cp"){const a=$("#bkt");a.select();let ok=false;try{ok=document.execCommand("copy")}catch(x){}$("#bkm").textContent=ok?"Copiado. Cole em um lugar seguro.":"Não consegui copiar sozinho: o texto já está selecionado, use Ctrl+C."}
+ else if(t.id==="rs"){try{const d=JSON.parse($("#bkt").value);if(!Array.isArray(d))throw 0;S.items=d;save();$("#bkm").textContent="Dados restaurados.";}catch(x){$("#bkm").textContent="Texto de backup inválido."}}
+});
+document.addEventListener("change",e=>{
+ const t=e.target;
+ if(t.name==="tp")fillCats();
+ else if(t.id==="rp")$("#chips").classList.toggle("hide",t.value!=="2");
+ else if(t.dataset.done){const i=S.items.find(x=>x.id===t.dataset.done);if(i){i.done=t.checked;save();render()}}
+ else if(t.dataset.val){const i=S.items.find(x=>x.id===t.dataset.val),v=parseFloat(t.value);if(i&&v>=0){i.val=v;save();render()}}
+});
+
+const PRE={"Lavanda":["#8b6fd6","#3fb68b","#e8806a"],"Menta":["#2fa88a","#3d8fd1","#e58c5f"],"Céu":["#4a90d9","#3fb68b","#e8806a"],"Mel":["#d99a2b","#4aa88c","#d9695b"],"Terracota":["#c8704f","#4f9d7c","#b8574b"],"Grafite":["#5b6677","#3fb68b","#e8806a"]};
+const DEF={ac:"#8b6fd6",g:"#3fb68b",r:"#e8806a",title:"Meu Calendário Financeiro",mode:"auto",cats:CATD};
+let CFG=Object.assign({},DEF);
+try{const c=localStorage.getItem("calfin_cfg");if(c)CFG=Object.assign({},DEF,JSON.parse(c))}catch(e){}
+CAT=CFG.cats;
+const saveCfg=()=>{try{localStorage.setItem("calfin_cfg",JSON.stringify(CFG))}catch(e){}};
+const hx=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+const mix=(a,b,t)=>{const x=hx(a),y=hx(b);return"#"+x.map((v,i)=>Math.round(v*t+y[i]*(1-t)).toString(16).padStart(2,"0")).join("")};
+function applyCfg(){
+ const dk=CFG.mode==="dark"||(CFG.mode==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches);
+ const K="#14101c",W="#ffffff",ac=CFG.ac,g=CFG.g,r=CFG.r;
+ const v=dk?{"--bg":mix(ac,K,.1),"--card":mix(ac,K,.17),"--tx":"#efeaf8","--mu":mix(W,ac,.55),"--bd":mix(ac,K,.25),"--hd":mix(ac,K,.22),"--ac":mix(ac,W,.7),"--ac2":mix(ac,W,.5),"--g":mix(g,W,.75),"--r":mix(r,W,.75),"--gl":mix(g,K,.35),"--rl":mix(r,K,.35)}
+ :{"--bg":mix(ac,W,.06),"--card":W,"--tx":mix(ac,"#1a1426",.2),"--mu":mix(ac,"#8a8a96",.2),"--bd":mix(ac,W,.12),"--hd":mix(ac,W,.2),"--ac":ac,"--ac2":mix(ac,W,.75),"--g":g,"--r":r,"--gl":mix(g,W,.3),"--rl":mix(r,W,.3)};
+ const st=document.documentElement.style;
+ Object.entries(v).forEach(([k,x])=>st.setProperty(k,x));
+ st.colorScheme=dk?"dark":"light";
+ $("#ttl").textContent="✿ "+CFG.title;document.title=CFG.title;
+ const mt=document.querySelector("meta[name=theme-color]");if(mt)mt.setAttribute("content",ac);
+}
+function drawCfg(){
+ $("#cf-t").value=CFG.title;$("#cf-m").value=CFG.mode;$("#cf-a").value=CFG.ac;$("#cf-g").value=CFG.g;$("#cf-r").value=CFG.r;
+ $("#cf-o").value=CFG.cats.out.join("\n");$("#cf-i").value=CFG.cats.in.join("\n");
+ $("#cf-p").innerHTML=Object.entries(PRE).map(([n,c])=>`<button data-th="${n}"><u style="background:${c[0]}"></u><u style="background:${c[1]}"></u><u style="background:${c[2]}"></u> ${n}</button>`).join("");
+}
+document.addEventListener("input",e=>{
+ const t=e.target,m={"cf-t":"title","cf-a":"ac","cf-g":"g","cf-r":"r"};
+ if(m[t.id])CFG[m[t.id]]=(t.id==="cf-t"&&!t.value.trim())?DEF.title:t.value;
+ else if(t.id==="cf-o"||t.id==="cf-i"){const l=t.value.split("\n").map(x=>x.trim()).filter(Boolean);if(!l.length)return;CFG.cats=Object.assign({},CFG.cats,{[t.id==="cf-o"?"out":"in"]:l});CAT=CFG.cats}
+ else return;
+ saveCfg();applyCfg();
+});
+document.addEventListener("change",e=>{if(e.target.id==="cf-m"){CFG.mode=e.target.value;saveCfg();applyCfg()}});
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-th]");
+ if(b){const c=PRE[b.dataset.th];CFG.ac=c[0];CFG.g=c[1];CFG.r=c[2];saveCfg();applyCfg();drawCfg()}
+ if(e.target.id==="cf-rs"){CFG=Object.assign({},DEF);CAT=CFG.cats;saveCfg();applyCfg();drawCfg()}
+});
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(CFG.mode==="auto")applyCfg()})}catch(e){}
+applyCfg();
+render();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
+</script>
+</body>
+</html>
