@@ -90,7 +90,7 @@ button{border-radius:999px;transition:.15s}
 button:hover{transform:translateY(-1px)}
 button.on,button.pri{background:linear-gradient(135deg,var(--ac),var(--ac2,#a58be8));border-color:transparent;color:#fff}
 .m{border-radius:22px;box-shadow:0 6px 20px color-mix(in srgb,var(--ac) 13%,transparent);padding:14px}
-.m h3{color:var(--ac);font-size:16px}.m h3::before{content:"★ ";color:var(--g)}
+.m h3{color:var(--ac);font-size:16px}.m h3::before{content:"✿ ";color:var(--g)}
 .d{border-radius:50%;aspect-ratio:1;min-height:0;padding:0}
 .d.t{background:var(--ac);color:#fff;border-color:transparent}.d.t b{font-weight:700}
 .d.t.late{background:var(--r)}
@@ -107,21 +107,54 @@ input[type=color]{width:48px;height:36px;border:0;background:none;padding:0;curs
 .cl{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13px;color:var(--mu)}
 .nav u{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:2px;text-decoration:none}
 #cf-o,#cf-i{min-height:210px}
+
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input[type=checkbox]{width:20px;height:20px;accent-color:var(--ac)}
+#tabs i{font-style:normal;margin-right:4px}
+#new b{font-size:18px;line-height:1}
+.m h3[data-mo]{cursor:pointer}
+.vt{margin:0 0 8px}
+.mbig{display:block}
+.mh{display:flex;align-items:center;justify-content:space-between;margin:4px 0 10px}
+.mh h2{margin:0;font-size:19px;color:var(--ac)}
+.mh button{width:44px;height:44px;padding:0;font-size:22px}
+.mbig .gr{gap:4px}.mbig .wd{font-size:12px;margin-bottom:4px}
+.mbig .d b{font-size:16px}
+.ag{display:grid;grid-template-columns:auto 44px 1fr auto;gap:8px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--bd)}
+.ag .ad{color:var(--mu);font-size:13px}.ag.in b{color:var(--g)}.ag.out b{color:var(--r)}
+@media(max-width:700px){
+ .wrap{padding:10px 10px 120px}
+ header{gap:6px}h1{font-size:18px}
+ #tabs{position:fixed;left:0;right:0;bottom:0;z-index:4;background:var(--card);border-top:1px solid var(--bd);justify-content:space-around;flex-wrap:nowrap;gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+ #tabs button{border:0;background:none;box-shadow:none;border-radius:16px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;padding:6px 10px;color:var(--mu)}
+ #tabs button.on{background:var(--hd);color:var(--ac)}
+ #tabs i{font-size:21px;margin:0}
+ #new{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:58px;height:58px;border-radius:50%;padding:0;z-index:4;box-shadow:0 8px 22px color-mix(in srgb,var(--ac) 40%,transparent)}
+ #new b{font-size:30px}#new span{display:none}
+ .months{grid-template-columns:repeat(2,1fr);gap:8px}
+ .months .m{padding:8px}.months .d b{font-size:11px}.months .ms{flex-direction:column;font-size:11px}
+ .cards{grid-template-columns:1fr 1fr}
+ .chart{min-width:440px}
+ #ov{align-items:flex-end;padding:0}
+ .box{max-width:none;border-radius:24px 24px 0 0;max-height:92vh;overflow:auto;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+ .frm input,.frm select,textarea,.it input[type=number],#v-cfg input[type=text],#v-cfg select,#pm{font-size:16px}
+}
+#chips.hide{display:none}
+input[type=radio]{accent-color:var(--ac)}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
- <h1 id="ttl">★ Meu Calendário Financeiro</h1>
- <div class="nav">
-  <button id="py">‹</button><span id="yr"></span><button id="ny">›</button>
-  <button data-t="cal" class="on">Calendário</button><button data-t="dash">Painel</button><button data-t="cfg">Personalizar</button><button data-t="bk">Backup</button>
-  <button class="pri" id="new">+ Lançamento</button>
- </div>
+ <h1 id="ttl">✿ Meu Calendário Financeiro</h1>
+ <div class="nav"><button id="py">‹</button><span id="yr"></span><button id="ny">›</button></div>
+ <div id="tabs" class="nav"><button data-t="cal" class="on"><i>📅</i><span>Calendário</span></button><button data-t="dash"><i>📊</i><span>Painel</span></button><button data-t="cfg"><i>🎨</i><span>Personalizar</span></button><button data-t="bk"><i>💾</i><span>Backup</span></button></div>
+ <button class="pri" id="new"><b>+</b><span> Lançamento</span></button>
 </header>
 
 <div id="v-cal">
- <p class="leg"><u class="g"></u> entrada &nbsp; <u class="r"></u> saída &nbsp; fundo rosa = conta em atraso &nbsp; borda azul = hoje. Clique em um dia para lançar ou ver.</p>
+ <div class="nav vt"><button data-vw="m">Mês</button><button data-vw="y">Ano</button></div>
+ <p class="leg"><u class="g"></u> entrada &nbsp; <u class="r"></u> saída &nbsp; fundo pêssego = conta em atraso &nbsp; dia preenchido = hoje. Toque em um dia para lançar ou ver.</p>
  <div class="months" id="months"></div>
 </div>
 
@@ -182,7 +215,7 @@ const iso=(y,m,d)=>y+"-"+pad(m+1)+"-"+pad(d);
 const now=new Date();
 const TODAY=iso(now.getFullYear(),now.getMonth(),now.getDate());
 const brl=v=>v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
-let S={items:[],year:now.getFullYear(),tab:"cal",sel:null,pm:"all",confirm:null};
+let S={items:[],year:now.getFullYear(),tab:"cal",sel:null,pm:"all",confirm:null,vw:matchMedia("(max-width:700px)").matches?"m":"y",mm:now.getMonth()};
 try{const r=localStorage.getItem("calfin1");if(r)S.items=JSON.parse(r)||[]}catch(e){}
 const save=()=>{try{localStorage.setItem("calfin1",JSON.stringify(S.items))}catch(e){}};
 const sum=(l,t,done)=>l.filter(i=>i.type===t&&(done===undefined||i.done===done)).reduce((a,i)=>a+i.val,0);
@@ -198,7 +231,22 @@ function render(){
  if(S.tab==="cfg")drawCfg();
 }
 
+function drawMonth(){
+ const m=S.mm,its=S.items.filter(i=>i.date.startsWith(S.year+"-"+pad(m+1)));
+ const first=new Date(S.year,m,1).getDay(),n=new Date(S.year,m+1,0).getDate();
+ let c="";for(let i=0;i<first;i++)c+="<i></i>";
+ for(let d=1;d<=n;d++){const ds=iso(S.year,m,d),di=its.filter(i=>i.date===ds);
+  const hi=di.some(i=>i.type==="in"),ho=di.some(i=>i.type==="out"),late=di.some(i=>i.type==="out"&&!i.done&&ds<TODAY);
+  c+=`<button class="d${ds===TODAY?" t":""}${late?" late":""}" data-d="${ds}"><b>${d}</b><span>${hi?'<u class="g"></u>':""}${ho?'<u class="r"></u>':""}</span></button>`}
+ const ent=sum(its,"in",true),sai=sum(its,"out",true),ap=sum(its,"out",false),sal=ent-sai;
+ const cd=(t,v,cl)=>`<div class="c"><small>${t}</small><strong class="${cl||""}">${brl(v)}</strong></div>`;
+ const ag=its.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(i=>`<div class="ag ${i.type}"><input type="checkbox" data-done="${i.id}" ${i.done?"checked":""}><span class="ad">${i.date.slice(8)}/${i.date.slice(5,7)}</span><span class="n" data-d="${i.date}">${i.desc}</span><b>${brl(i.val)}</b></div>`).join("");
+ $("#months").innerHTML=`<div class="mh"><button data-mn="-1">‹</button><h2>${MES[m]} ${S.year}</h2><button data-mn="1">›</button></div><section class="m"><div class="wd"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div><div class="gr">${c}</div></section><div class="cards">${cd("Entrou",ent,"pos")+cd("Saiu",sai,"neg")+cd("Saldo",sal,sal<0?"neg":"pos")+cd("A pagar",ap)}</div><div class="box2"><h3>Lançamentos do mês</h3>${ag||'<p class="leg">Nada lançado neste mês. Toque em um dia ou no + para começar.</p>'}</div>`;
+}
 function drawCal(){
+ document.querySelectorAll("[data-vw]").forEach(b=>b.classList.toggle("on",b.dataset.vw===S.vw));
+ $("#months").className=S.vw==="m"?"mbig":"months";
+ if(S.vw==="m"){drawMonth();return}
  const all=inYear();let h="";
  for(let m=0;m<12;m++){
   const pre=S.year+"-"+pad(m+1);
@@ -213,7 +261,7 @@ function drawCal(){
    c+=`<button class="d${ds===TODAY?" t":""}${late?" late":""}" data-d="${ds}"><b>${d}</b><span>${hi?'<u class="g"></u>':""}${ho?'<u class="r"></u>':""}</span></button>`;
   }
   const sal=sum(its,"in",true)-sum(its,"out",true),ap=sum(its,"out",false);
-  h+=`<section class="m"><h3>${MES[m]}</h3><div class="wd"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div><div class="gr">${c}</div><div class="ms"><span>Saldo: <b class="${sal<0?"neg":"pos"}">${brl(sal)}</b></span><span>A pagar: ${brl(ap)}</span></div></section>`;
+  h+=`<section class="m"><h3 data-mo="${m}">${MES[m]}</h3><div class="wd"><span>D</span><span>S</span><span>T</span><span>Q</span><span>Q</span><span>S</span><span>S</span></div><div class="gr">${c}</div><div class="ms"><span>Saldo: <b class="${sal<0?"neg":"pos"}">${brl(sal)}</b></span><span>A pagar: ${brl(ap)}</span></div></section>`;
  }
  $("#months").innerHTML=h;
 }
@@ -270,11 +318,14 @@ document.addEventListener("click",e=>{
  const t=e.target;
  if(t.id==="py"){S.year--;render()}
  else if(t.id==="ny"){S.year++;render()}
- else if(t.dataset.t){S.tab=t.dataset.t;render()}
- else if(t.id==="new")openModal(null);
+ else if(t.closest("[data-t]")){S.tab=t.closest("[data-t]").dataset.t;render()}
+ else if(t.closest("#new"))openModal(null);
  else if(t.id==="cl"||t.id==="ov")$("#ov").hidden=true;
  else if(t.id==="add")add();
- else if(t.closest(".d"))openModal(t.closest(".d").dataset.d);
+ else if(t.closest("[data-mn]")){const k=+t.closest("[data-mn]").dataset.mn;S.mm+=k;if(S.mm<0){S.mm=11;S.year--}else if(S.mm>11){S.mm=0;S.year++}render()}
+ else if(t.dataset.vw){S.vw=t.dataset.vw;render()}
+ else if(t.closest("[data-mo]")){S.mm=+t.closest("[data-mo]").dataset.mo;S.vw="m";render()}
+ else if(t.closest("[data-d]"))openModal(t.closest("[data-d]").dataset.d);
  else if(t.dataset.del){S.items=S.items.filter(i=>i.id!==t.dataset.del);save();drawList();render()}
  else if(t.dataset.ser){const g=t.dataset.ser;if(S.confirm===g){S.items=S.items.filter(i=>i.gid!==g);S.confirm=null;save();drawList();render()}else{S.confirm=g;drawList()}}
  else if(t.id==="cp"){const a=$("#bkt");a.select();let ok=false;try{ok=document.execCommand("copy")}catch(x){}$("#bkm").textContent=ok?"Copiado. Cole em um lugar seguro.":"Não consegui copiar sozinho: o texto já está selecionado, use Ctrl+C."}
@@ -304,7 +355,7 @@ function applyCfg(){
  const st=document.documentElement.style;
  Object.entries(v).forEach(([k,x])=>st.setProperty(k,x));
  st.colorScheme=dk?"dark":"light";
- $("#ttl").textContent="★ "+CFG.title;document.title=CFG.title;
+ $("#ttl").textContent="✿ "+CFG.title;document.title=CFG.title;
  const mt=document.querySelector("meta[name=theme-color]");if(mt)mt.setAttribute("content",ac);
 }
 function drawCfg(){
@@ -327,6 +378,10 @@ document.addEventListener("click",e=>{
 });
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(CFG.mode==="auto")applyCfg()})}catch(e){}
 applyCfg();
+
+let tx=null;
+document.addEventListener("touchstart",e=>{tx=e.target.closest("#months.mbig")?e.touches[0].clientX:null},{passive:true});
+document.addEventListener("touchend",e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>70){const b=document.querySelector('[data-mn="'+(dx<0?1:-1)+'"]');if(b)b.click()}},{passive:true});
 render();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
 </script>
